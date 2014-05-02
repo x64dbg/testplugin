@@ -24,7 +24,30 @@ static void cbMenuEntry(CBTYPE cbType, void* callbackInfo)
         DbgCmdExec("DumpProcess");
         break;
     case MENU_TEST:
-        MessageBoxA(hwndDlg, "Test menu entry", "test", MB_ICONINFORMATION);
+        MessageBoxA(hwndDlg, "Test Menu Entry Clicked!", "Test Plugin", MB_ICONINFORMATION);
+        break;
+    case MENU_SELECTION:
+        {
+            SELECTIONDATA sel;
+            char msg[256]="";
+            GuiSelectionGet(GUI_DISASSEMBLY, &sel);
+            sprintf(msg, "%p - %p", sel.start, sel.end);
+            MessageBoxA(hwndDlg, msg, "Disassembly", MB_ICONINFORMATION);
+            sel.start+=4; //expand selection
+            GuiSelectionSet(GUI_DISASSEMBLY, &sel);
+
+            GuiSelectionGet(GUI_DUMP, &sel);
+            sprintf(msg, "%p - %p", sel.start, sel.end);
+            MessageBoxA(hwndDlg, msg, "Dump", MB_ICONINFORMATION);
+            sel.start+=4; //expand selection
+            GuiSelectionSet(GUI_DUMP, &sel);
+
+            GuiSelectionGet(GUI_STACK, &sel);
+            sprintf(msg, "%p - %p", sel.start, sel.end);
+            MessageBoxA(hwndDlg, msg, "Stack", MB_ICONINFORMATION);
+            sel.start+=4; //expand selection
+            GuiSelectionSet(GUI_STACK, &sel);
+        }
         break;
     }
 }
@@ -124,6 +147,7 @@ void testStop()
 
 void testSetup()
 {
-    _plugin_menuaddentry(hMenu, MENU_TEST, "&Test");
-    _plugin_menuaddentry(hMenu, MENU_DUMP, "&DumpProcess");
+    _plugin_menuaddentry(hMenu, MENU_DUMP, "&DumpProcess...");
+    _plugin_menuaddentry(hMenu, MENU_TEST, "&Menu Test");
+    _plugin_menuaddentry(hMenu, MENU_SELECTION, "&Selection API Test");
 }

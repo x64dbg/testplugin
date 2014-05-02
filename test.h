@@ -6,6 +6,7 @@
 //menu identifiers
 #define MENU_DUMP 0
 #define MENU_TEST 1
+#define MENU_SELECTION 2
 
 //functions
 void testInit(PLUG_INITSTRUCT* initStruct);

@@ -117,6 +117,7 @@ enum DBGMSG
     DBG_SCRIPT_ABORT,               // param1=unused,                    param2=unused
     DBG_SCRIPT_GETLINETYPE,         // param1=int line,                  param2=unused
     DBG_SCRIPT_SETIP,               // param1=int line,                  param2=unused
+    DBG_SCRIPT_GETBRANCHINFO,       // param1=int line,                  param2=SCRIPTBRANCH* info
     DBG_SYMBOL_ENUM,                // param1=SYMBOLCBINFO* cbInfo,      param2=unused
     DBG_ASSEMBLE_AT,                // param1=duint addr,                param2=const char* instruction
     DBG_MODBASE_FROM_NAME,          // param1=const char* modname,       param2=unused
@@ -135,6 +136,19 @@ enum SCRIPTLINETYPE
     linelabel,
     linecomment,
     lineempty,
+};
+
+enum SCRIPTBRANCHTYPE
+{
+    scriptnobranch,
+    scriptjmp,
+    scriptjnejnz,
+    scriptjejz,
+    scriptjbjl,
+    scriptjajg,
+    scriptjbejle,
+    scriptjaejge,
+    scriptcall
 };
 
 enum DISASM_INSTRTYPE
@@ -414,6 +428,13 @@ struct BASIC_INSTRUCTION_INFO
     bool branch; //jumps/calls
 };
 
+struct SCRIPTBRANCH
+{
+    SCRIPTBRANCHTYPE type;
+    int dest;
+    char branchlabel[256];
+};
+
 //Debugger functions
 BRIDGE_IMPEXP const char* DbgInit();
 BRIDGE_IMPEXP bool DbgMemRead(duint va, unsigned char* dest, duint size);
@@ -454,6 +475,7 @@ BRIDGE_IMPEXP bool DbgScriptCmdExec(const char* command);
 BRIDGE_IMPEXP void DbgScriptAbort();
 BRIDGE_IMPEXP SCRIPTLINETYPE DbgScriptGetLineType(int line);
 BRIDGE_IMPEXP void DbgScriptSetIp(int line);
+BRIDGE_IMPEXP bool DbgScriptGetBranchInfo(int line, SCRIPTBRANCH* info);
 BRIDGE_IMPEXP void DbgSymbolEnum(duint base, CBSYMBOLENUM cbSymbolEnum, void* user);
 BRIDGE_IMPEXP bool DbgAssembleAt(duint addr, const char* instruction);
 BRIDGE_IMPEXP duint DbgModBaseFromName(const char* name);
@@ -466,6 +488,10 @@ BRIDGE_IMPEXP void DbgMenuEntryClicked(int hEntry);
 
 //Gui defines
 #define GUI_PLUGIN_MENU 0
+
+#define GUI_DISASSEMBLY 0
+#define GUI_DUMP 1
+#define GUI_STACK 2
 
 //Gui enums
 enum GUIMSG
@@ -511,7 +537,9 @@ enum GUIMSG
     GUI_MENU_ADD,                   // param1=int hMenu,            param2=const char* title
     GUI_MENU_ADD_ENTRY,             // param1=int hMenu,            param2=const char* title
     GUI_MENU_ADD_SEPARATOR,         // param1=int hMenu,            param2=unused
-    GUI_MENU_CLEAR                  // param1=int hMenu,            param2=unused
+    GUI_MENU_CLEAR,                 // param1=int hMenu,            param2=unused
+    GUI_SELECTION_GET,              // param1=int hWindow,          param2=SELECTIONDATA* selection
+    GUI_SELECTION_SET               // param1=int hWindow,          param2=const SELECTIONDATA* selection
 };
 
 //GUI structures
@@ -520,6 +548,12 @@ struct CELLINFO
     int row;
     int col;
     const char* str;
+};
+
+struct SELECTIONDATA
+{
+    duint start;
+    duint end;
 };
 
 //GUI functions
@@ -566,6 +600,8 @@ BRIDGE_IMPEXP int GuiMenuAdd(int hMenu, const char* title);
 BRIDGE_IMPEXP int GuiMenuAddEntry(int hMenu, const char* title);
 BRIDGE_IMPEXP void GuiMenuAddSeparator(int hMenu);
 BRIDGE_IMPEXP void GuiMenuClear(int hMenu);
+BRIDGE_IMPEXP bool GuiSelectionGet(int hWindow, SELECTIONDATA* selection);
+BRIDGE_IMPEXP bool GuiSelectionSet(int hWindow, const SELECTIONDATA* selection);
 
 #ifdef __cplusplus
 }
