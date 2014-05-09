@@ -123,6 +123,44 @@ static bool cbDumpProcessCommand(int argc, char* argv[])
     return true;
 }
 
+//grs addr
+static bool cbGrs(int argc, char* argv[])
+{
+    //Original tool "GetRelocSize" by Killboy/SND
+    if(argc<2)
+    {
+        _plugin_logputs("[TEST] not enough arguments!");
+        return false;
+    }
+    duint RelocDirAddr=DbgValFromString(argv[1]);
+    duint RelocSize=0;
+    IMAGE_RELOCATION RelocDir;
+    do 
+    {
+        if(!DbgMemRead(RelocDirAddr, (unsigned char*)&RelocDir, sizeof(IMAGE_RELOCATION)))
+        {
+            _plugin_logputs("[TEST] invalid relocation table!");
+            return false;
+        }
+        if(!RelocDir.SymbolTableIndex)
+            break;
+        RelocSize+=RelocDir.SymbolTableIndex;
+        RelocDirAddr+=RelocDir.SymbolTableIndex;
+    }
+    while(RelocDir.VirtualAddress);
+
+    if(!RelocSize)
+    {
+        _plugin_logputs("[TEST] invalid relocation table!");
+        return false;
+    }
+
+    DbgValToString("$result", RelocSize);
+    DbgCmdExec("$result");
+
+    return true;
+}
+
 void testInit(PLUG_INITSTRUCT* initStruct)
 {
     _plugin_logprintf("[TEST] pluginHandle: %d\n", pluginHandle);
@@ -133,6 +171,8 @@ void testInit(PLUG_INITSTRUCT* initStruct)
         _plugin_logputs("[TEST] error registering the \"plugin1\" command!");
     if(!_plugin_registercommand(pluginHandle, "DumpProcess", cbDumpProcessCommand, true))
         _plugin_logputs("[TEST] error registering the \"DumpProcess\" command!");
+    if(!_plugin_registercommand(pluginHandle, "grs", cbGrs, true))
+        _plugin_logputs("[TEST] error registering the \"grs\" command!");
 }
 
 void testStop()
@@ -142,6 +182,7 @@ void testStop()
     _plugin_unregistercallback(pluginHandle, CB_MENUENTRY);
     _plugin_unregistercommand(pluginHandle, "plugin1");
     _plugin_unregistercommand(pluginHandle, "DumpProcess");
+    _plugin_unregistercommand(pluginHandle, "grs");
     _plugin_menuclear(hMenu);
 }
 
