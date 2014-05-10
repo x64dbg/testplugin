@@ -64,6 +64,11 @@ static void cbDebugEvent(CBTYPE cbType, void* callbackInfo)
 static bool cbTestCommand(int argc, char* argv[])
 {
     _plugin_logputs("[TEST] test command!");
+    char line[GUI_MAX_LINE_SIZE]="";
+    if(!GuiGetLineWindow("test", line))
+        _plugin_logputs("[TEST] cancel pressed!");
+    else
+        _plugin_logprintf("[TEST] line: \"%s\"\n", line);
     return true;
 }
 
