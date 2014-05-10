@@ -52,6 +52,15 @@ static void cbMenuEntry(CBTYPE cbType, void* callbackInfo)
     }
 }
 
+static void cbDebugEvent(CBTYPE cbType, void* callbackInfo)
+{
+    PLUG_CB_DEBUGEVENT* info=(PLUG_CB_DEBUGEVENT*)callbackInfo;
+    if(info->DebugEvent->dwDebugEventCode==EXCEPTION_DEBUG_EVENT)
+    {
+        _plugin_logprintf("[TEST] DebugEvent->EXCEPTION_DEBUG_EVENT->%.8X\n", info->DebugEvent->u.Exception.ExceptionRecord.ExceptionCode);
+    }
+}
+
 static bool cbTestCommand(int argc, char* argv[])
 {
     _plugin_logputs("[TEST] test command!");
@@ -167,6 +176,7 @@ void testInit(PLUG_INITSTRUCT* initStruct)
     _plugin_registercallback(pluginHandle, CB_INITDEBUG, cbInitDebug);
     _plugin_registercallback(pluginHandle, CB_STOPDEBUG, cbStopDebug);
     _plugin_registercallback(pluginHandle, CB_MENUENTRY, cbMenuEntry);
+    _plugin_registercallback(pluginHandle, CB_DEBUGEVENT, cbDebugEvent);
     if(!_plugin_registercommand(pluginHandle, "plugin1", cbTestCommand, false))
         _plugin_logputs("[TEST] error registering the \"plugin1\" command!");
     if(!_plugin_registercommand(pluginHandle, "DumpProcess", cbDumpProcessCommand, true))
@@ -180,6 +190,7 @@ void testStop()
     _plugin_unregistercallback(pluginHandle, CB_INITDEBUG);
     _plugin_unregistercallback(pluginHandle, CB_STOPDEBUG);
     _plugin_unregistercallback(pluginHandle, CB_MENUENTRY);
+    _plugin_unregistercallback(pluginHandle, CB_DEBUGEVENT);
     _plugin_unregistercommand(pluginHandle, "plugin1");
     _plugin_unregistercommand(pluginHandle, "DumpProcess");
     _plugin_unregistercommand(pluginHandle, "grs");
