@@ -116,7 +116,7 @@ static bool cbDumpProcessCommand(int argc, char* argv[])
         return false;
     }
     char szFileName[MAX_PATH]="";
-    int len=strlen(mod);
+    size_t len=strlen(mod);
     while(mod[len]!='.' && len)
         len--;
     char ext[MAX_PATH]="";

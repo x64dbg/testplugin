@@ -16,8 +16,21 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pluginmain.h" />
+    <ClInclude Include="pluginsdk\BeaEngine\basic_types.h" />
+    <ClInclude Include="pluginsdk\BeaEngine\BeaEngine.h" />
+    <ClInclude Include="pluginsdk\BeaEngine\export.h" />
+    <ClInclude Include="pluginsdk\BeaEngine\macros.h" />
     <ClInclude Include="pluginsdk\bridgemain.h" />
+    <ClInclude Include="pluginsdk\dbghelp\dbghelp.h" />
+    <ClInclude Include="pluginsdk\DeviceNameResolver\DeviceNameResolver.h" />
+    <ClInclude Include="pluginsdk\jansson\jansson.h" />
+    <ClInclude Include="pluginsdk\jansson\jansson_config.h" />
+    <ClInclude Include="pluginsdk\lz4\lz4.h" />
+    <ClInclude Include="pluginsdk\lz4\lz4file.h" />
+    <ClInclude Include="pluginsdk\lz4\lz4hc.h" />
     <ClInclude Include="pluginsdk\TitanEngine\TitanEngine.h" />
+    <ClInclude Include="pluginsdk\XEDParse\XEDParse.h" />
+    <ClInclude Include="pluginsdk\_dbgfunctions.h" />
     <ClInclude Include="pluginsdk\_plugins.h" />
     <ClInclude Include="pluginsdk\_plugin_types.h" />
     <ClInclude Include="test.h" />
@@ -45,21 +58,21 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\x32</OutDir>
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\x32\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <TargetName>testplugin</TargetName>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\x64</OutDir>
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\x64\</OutDir>
     <TargetName>testplugin</TargetName>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;X64_DBG_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;_USRDLL;X64_DBG_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -75,7 +88,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;X64_DBG_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;_USRDLL;X64_DBG_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
