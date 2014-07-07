@@ -57,7 +57,7 @@ static void cbDebugEvent(CBTYPE cbType, void* callbackInfo)
     PLUG_CB_DEBUGEVENT* info=(PLUG_CB_DEBUGEVENT*)callbackInfo;
     if(info->DebugEvent->dwDebugEventCode==EXCEPTION_DEBUG_EVENT)
     {
-        _plugin_logprintf("[TEST] DebugEvent->EXCEPTION_DEBUG_EVENT->%.8X\n", info->DebugEvent->u.Exception.ExceptionRecord.ExceptionCode);
+        //_plugin_logprintf("[TEST] DebugEvent->EXCEPTION_DEBUG_EVENT->%.8X\n", info->DebugEvent->u.Exception.ExceptionRecord.ExceptionCode);
     }
 }
 
@@ -149,7 +149,7 @@ static bool cbGrs(int argc, char* argv[])
     duint RelocDirAddr=DbgValFromString(argv[1]);
     duint RelocSize=0;
     IMAGE_RELOCATION RelocDir;
-    do 
+    do
     {
         if(!DbgMemRead(RelocDirAddr, (unsigned char*)&RelocDir, sizeof(IMAGE_RELOCATION)))
         {

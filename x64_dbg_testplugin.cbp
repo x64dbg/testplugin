@@ -51,11 +51,23 @@
 		</Linker>
 		<Unit filename="pluginmain.cpp" />
 		<Unit filename="pluginmain.h" />
+		<Unit filename="pluginsdk/BeaEngine/BeaEngine.h" />
+		<Unit filename="pluginsdk/BeaEngine/basic_types.h" />
+		<Unit filename="pluginsdk/BeaEngine/export.h" />
+		<Unit filename="pluginsdk/BeaEngine/macros.h" />
+		<Unit filename="pluginsdk/DeviceNameResolver/DeviceNameResolver.h" />
 		<Unit filename="pluginsdk/TitanEngine/TitanEngine.h" />
+		<Unit filename="pluginsdk/XEDParse/XEDParse.h" />
+		<Unit filename="pluginsdk/_dbgfunctions.h" />
 		<Unit filename="pluginsdk/_plugin_types.h" />
 		<Unit filename="pluginsdk/_plugins.h" />
 		<Unit filename="pluginsdk/bridgemain.h" />
 		<Unit filename="pluginsdk/dbghelp/dbghelp.h" />
+		<Unit filename="pluginsdk/jansson/jansson.h" />
+		<Unit filename="pluginsdk/jansson/jansson_config.h" />
+		<Unit filename="pluginsdk/lz4/lz4.h" />
+		<Unit filename="pluginsdk/lz4/lz4file.h" />
+		<Unit filename="pluginsdk/lz4/lz4hc.h" />
 		<Unit filename="test.cpp" />
 		<Unit filename="test.h" />
 		<Extensions>
