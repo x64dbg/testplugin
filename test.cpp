@@ -86,7 +86,7 @@ static bool SaveFileDialog(char Buffer[MAX_PATH])
     sSaveFileName.Flags = OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY;
     sSaveFileName.lpstrTitle = szDialogTitle;
     sSaveFileName.hwndOwner = GuiGetWindowHandle();
-    return (TRUE == GetSaveFileNameA(&sSaveFileName));
+    return (FALSE != GetSaveFileNameA(&sSaveFileName));
 }
 
 //DumpProcess [EntryPointVA]

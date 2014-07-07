@@ -2,7 +2,7 @@
 #include "test.h"
 
 #define plugin_name "testplugin"
-#define plugin_version 001
+#define plugin_version 1
 
 int pluginHandle;
 HWND hwndDlg;
