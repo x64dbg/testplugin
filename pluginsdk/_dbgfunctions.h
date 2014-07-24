@@ -1,13 +1,31 @@
 #ifndef _DBGFUNCTIONS_H
 #define _DBGFUNCTIONS_H
 
-struct DBGPATCHINFO
+#ifndef __cplusplus
+#include <stdbool.h>
+#endif
+
+typedef struct
 {
     char mod[MAX_MODULE_SIZE];
     duint addr;
     unsigned char oldbyte;
     unsigned char newbyte;
-};
+} DBGPATCHINFO;
+
+typedef struct
+{
+    duint addr;
+    duint from;
+    duint to;
+    char comment[MAX_COMMENT_SIZE];
+} DBGCALLSTACKENTRY;
+
+typedef struct
+{
+    int total;
+    DBGCALLSTACKENTRY* entries;
+} DBGCALLSTACK;
 
 typedef bool (*ASSEMBLEATEX)(duint addr, const char* instruction, char* error, bool fillnop);
 typedef bool (*SECTIONFROMADDR)(duint addr, char* section);
@@ -25,8 +43,11 @@ typedef bool (*PATCHRESTORE)(duint addr);
 typedef int (*PATCHFILE)(DBGPATCHINFO* patchlist, int count, const char* szFileName, char* error);
 typedef int (*MODPATHFROMADDR)(duint addr, char* path, int size);
 typedef int (*MODPATHFROMNAME)(const char* modname, char* path, int size);
+typedef bool (*DISASMFAST)(unsigned char* data, duint addr, BASIC_INSTRUCTION_INFO* basicinfo);
+typedef void (*MEMUPDATEMAP)(HANDLE hProcess);
+typedef void (*GETCALLSTACK)(DBGCALLSTACK* callstack);
 
-struct DBGFUNCTIONS
+typedef struct DBGFUNCTIONS_
 {
     ASSEMBLEATEX AssembleAtEx;
     SECTIONFROMADDR SectionFromAddr;
@@ -44,7 +65,10 @@ struct DBGFUNCTIONS
     PATCHFILE PatchFile;
     MODPATHFROMADDR ModPathFromAddr;
     MODPATHFROMNAME ModPathFromName;
-};
+    DISASMFAST DisasmFast;
+    MEMUPDATEMAP MemUpdateMap;
+    GETCALLSTACK GetCallStack;
+} DBGFUNCTIONS;
 
 #ifdef BUILD_DBG
 

@@ -4,20 +4,18 @@
 #include <stdio.h>
 #include <psapi.h>
 
-static void cbInitDebug(CBTYPE cbType, void* callbackInfo)
+extern "C" __declspec(dllexport) void CBINITDEBUG(CBTYPE cbType, PLUG_CB_INITDEBUG* info)
 {
-    PLUG_CB_INITDEBUG* info=(PLUG_CB_INITDEBUG*)callbackInfo;
     _plugin_logprintf("[TEST] debugging of file %s started!\n", (const char*)info->szFileName);
 }
 
-static void cbStopDebug(CBTYPE cbType, void* callbackInfo)
+extern "C" __declspec(dllexport) void CBSTOPDEBUG(CBTYPE cbType, PLUG_CB_STOPDEBUG* info)
 {
     _plugin_logputs("[TEST] debugging stopped!");
 }
 
-static void cbMenuEntry(CBTYPE cbType, void* callbackInfo)
+extern "C" __declspec(dllexport) void CBMENUENTRY(CBTYPE cbType, PLUG_CB_MENUENTRY* info)
 {
-    PLUG_CB_MENUENTRY* info=(PLUG_CB_MENUENTRY*)callbackInfo;
     switch(info->hEntry)
     {
     case MENU_DUMP:
@@ -52,9 +50,8 @@ static void cbMenuEntry(CBTYPE cbType, void* callbackInfo)
     }
 }
 
-static void cbDebugEvent(CBTYPE cbType, void* callbackInfo)
+extern "C" __declspec(dllexport) void CBDEBUGEVENT(CBTYPE cbType, PLUG_CB_DEBUGEVENT* info)
 {
-    PLUG_CB_DEBUGEVENT* info=(PLUG_CB_DEBUGEVENT*)callbackInfo;
     if(info->DebugEvent->dwDebugEventCode==EXCEPTION_DEBUG_EVENT)
     {
         //_plugin_logprintf("[TEST] DebugEvent->EXCEPTION_DEBUG_EVENT->%.8X\n", info->DebugEvent->u.Exception.ExceptionRecord.ExceptionCode);
@@ -178,10 +175,6 @@ static bool cbGrs(int argc, char* argv[])
 void testInit(PLUG_INITSTRUCT* initStruct)
 {
     _plugin_logprintf("[TEST] pluginHandle: %d\n", pluginHandle);
-    _plugin_registercallback(pluginHandle, CB_INITDEBUG, cbInitDebug);
-    _plugin_registercallback(pluginHandle, CB_STOPDEBUG, cbStopDebug);
-    _plugin_registercallback(pluginHandle, CB_MENUENTRY, cbMenuEntry);
-    _plugin_registercallback(pluginHandle, CB_DEBUGEVENT, cbDebugEvent);
     if(!_plugin_registercommand(pluginHandle, "plugin1", cbTestCommand, false))
         _plugin_logputs("[TEST] error registering the \"plugin1\" command!");
     if(!_plugin_registercommand(pluginHandle, "DumpProcess", cbDumpProcessCommand, true))
@@ -192,10 +185,6 @@ void testInit(PLUG_INITSTRUCT* initStruct)
 
 void testStop()
 {
-    _plugin_unregistercallback(pluginHandle, CB_INITDEBUG);
-    _plugin_unregistercallback(pluginHandle, CB_STOPDEBUG);
-    _plugin_unregistercallback(pluginHandle, CB_MENUENTRY);
-    _plugin_unregistercallback(pluginHandle, CB_DEBUGEVENT);
     _plugin_unregistercommand(pluginHandle, "plugin1");
     _plugin_unregistercommand(pluginHandle, "DumpProcess");
     _plugin_unregistercommand(pluginHandle, "grs");
