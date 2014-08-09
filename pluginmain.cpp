@@ -10,10 +10,10 @@ int hMenu;
 
 DLL_EXPORT bool pluginit(PLUG_INITSTRUCT* initStruct)
 {
-    initStruct->pluginVersion=plugin_version;
-    initStruct->sdkVersion=PLUG_SDKVERSION;
+    initStruct->pluginVersion = plugin_version;
+    initStruct->sdkVersion = PLUG_SDKVERSION;
     strcpy(initStruct->pluginName, plugin_name);
-    pluginHandle=initStruct->pluginHandle;
+    pluginHandle = initStruct->pluginHandle;
     testInit(initStruct);
     return true;
 }
@@ -26,8 +26,8 @@ DLL_EXPORT bool plugstop()
 
 DLL_EXPORT void plugsetup(PLUG_SETUPSTRUCT* setupStruct)
 {
-    hwndDlg=setupStruct->hwndDlg;
-    hMenu=setupStruct->hMenu;
+    hwndDlg = setupStruct->hwndDlg;
+    hMenu = setupStruct->hMenu;
     testSetup();
 }
 
