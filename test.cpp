@@ -238,6 +238,8 @@ static ULONG_PTR GetInstrInfo(ULONG_PTR addr, instr_info* info)
     DbgDisasmFastAt(addr, &basicinfo);
     info->instrText=basicinfo.instruction;
     info->jmpaddr=basicinfo.branch && !basicinfo.call ? basicinfo.addr : 0;
+    if(basicinfo.size <= 0)
+        basicinfo.size = 1;
     return addr+basicinfo.size;
 }
 
@@ -256,12 +258,21 @@ bool cbGraph(int argc, char* argv[])
         _plugin_logputs("[TEST] invalid arguments!");
         return false;
     }
-    if(!make_flowchart(start, end, L"C:\\test.graph", GetInstrInfo))
+    wchar_t szGraphFile[MAX_PATH]=L"";
+    GetModuleFileNameW(GetModuleHandleW(0), szGraphFile, MAX_PATH);
+    int len=(int)wcslen(szGraphFile);
+    while(szGraphFile[len]!='\\' && len)
+        len--;
+    if(len)
+        szGraphFile[len]=L'\0';
+    wcscat_s(szGraphFile, L"\\function.vcg");
+    if(!make_flowchart(start, end, szGraphFile, GetInstrInfo))
     {
         _plugin_logputs("[TEST] failed to generate graph!");
         return false;
     }
     _plugin_logputs("[TEST] graph generated!");
+    ShellExecuteW(GuiGetWindowHandle(), L"open", szGraphFile, 0, 0, SW_SHOWNORMAL);
     return true;
 }
 

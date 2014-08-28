@@ -101,16 +101,10 @@ bool make_flowchart(ULONG_PTR start, ULONG_PTR end, const wchar_t* szTargetFile,
 {
     HANDLE temp_file = CreateFileW(szTargetFile, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     if(temp_file == INVALID_HANDLE_VALUE)
-    {
         return false;
-    }
-
-    ULONG_PTR currentnode = start;
-    ULONG_PTR psize = 0;
-    ULONG_PTR current_addr = start;
-    ULONG_PTR blocksize = end - start;
-
+    
     char buffer[TEXTLEN * 2 + 4];
+    ULONG_PTR currentnode = start;
 
     int writelen = sprintf_s(buffer, "graph: {\ntitle: \"Graph of %p\"\n", start);
     DWORD len_written;
@@ -119,10 +113,10 @@ bool make_flowchart(ULONG_PTR start, ULONG_PTR end, const wchar_t* szTargetFile,
     writelen = sprintf_s(buffer, "node: { title: \"%p\" vertical_order: 0 color: 83 fontname: \"courR12\" label: \"%p:", currentnode, currentnode);
     WriteFile(temp_file, buffer, (DWORD) writelen, &len_written, NULL);
 
-
-
     std::set<ULONG_PTR> nodelist; //list of node addresses, just to make sure we are not handling nodes multiple times
     std::list<instr_info> disasmlist;
+    ULONG_PTR psize = 0;
+    ULONG_PTR current_addr = start;
 
     // first pass - disassemble instructions and enumerate nodes
     do
@@ -152,7 +146,7 @@ bool make_flowchart(ULONG_PTR start, ULONG_PTR end, const wchar_t* szTargetFile,
             currentnode = 0; // update current_addrnode on next pass
         }
     }
-    while(current_addr + psize < end);
+    while(current_addr + psize <= end);
 
     // walk through saved disasm list and split into nodes
     currentnode = start;
