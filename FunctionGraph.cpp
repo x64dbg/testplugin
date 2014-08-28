@@ -102,7 +102,7 @@ bool make_flowchart(ULONG_PTR start, ULONG_PTR end, const wchar_t* szTargetFile,
     HANDLE temp_file = CreateFileW(szTargetFile, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     if(temp_file == INVALID_HANDLE_VALUE)
         return false;
-    
+
     char buffer[TEXTLEN * 2 + 4];
     ULONG_PTR currentnode = start;
 

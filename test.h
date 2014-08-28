@@ -8,6 +8,8 @@
 #define MENU_TEST 1
 #define MENU_SELECTION 2
 #define MENU_FILEOFFSET 3
+#define MENU_GRAPH_SELECTION 4
+#define MENU_GRAPH_FUNCTION 5
 
 //functions
 void testInit(PLUG_INITSTRUCT* initStruct);

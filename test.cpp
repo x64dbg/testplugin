@@ -103,6 +103,45 @@ extern "C" __declspec(dllexport) void CBMENUENTRY(CBTYPE cbType, PLUG_CB_MENUENT
             _plugin_logputs("StaticFileLoad failed :(");
     }
     break;
+
+    case MENU_GRAPH_SELECTION:
+    {
+        if(!DbgIsDebugging())
+        {
+            _plugin_logputs("you need to be debugging to use this command");
+            break;
+        }
+        SELECTIONDATA selection;
+        if(!GuiSelectionGet(GUI_DISASSEMBLY, &selection))
+            break;
+        char cmd[256] = "";
+        sprintf_s(cmd, "graph %p,%p", selection.start, selection.end);
+        DbgCmdExec(cmd);
+    }
+    break;
+
+    case MENU_GRAPH_FUNCTION:
+    {
+        if(!DbgIsDebugging())
+        {
+            _plugin_logputs("you need to be debugging to use this command");
+            break;
+        }
+        SELECTIONDATA selection;
+        if(!GuiSelectionGet(GUI_DISASSEMBLY, &selection))
+            break;
+        duint start, end;
+        if(!DbgFunctionGet(selection.start, &start, &end))
+            if(!DbgFunctionGet(selection.end, &start, &end))
+            {
+                _plugin_logputs("no function defined under cursor");
+                break;
+            }
+        char cmd[256] = "";
+        sprintf_s(cmd, "graph %p,%p", start, end);
+        DbgCmdExec(cmd);
+    }
+    break;
     }
 }
 
@@ -230,41 +269,43 @@ static bool cbGrs(int argc, char* argv[])
 
 static ULONG_PTR GetInstrInfo(ULONG_PTR addr, instr_info* info)
 {
-    info->addr=addr;
-    char comment[MAX_COMMENT_SIZE]="";
+    info->addr = addr;
+    char comment[MAX_COMMENT_SIZE] = "";
     DbgGetCommentAt(addr, comment);
-    info->comment=comment;
+    info->comment = comment;
     BASIC_INSTRUCTION_INFO basicinfo;
     DbgDisasmFastAt(addr, &basicinfo);
-    info->instrText=basicinfo.instruction;
-    info->jmpaddr=basicinfo.branch && !basicinfo.call ? basicinfo.addr : 0;
+    char disasm[GUI_MAX_DISASSEMBLY_SIZE] = "";
+    GuiGetDisassembly(addr, disasm);
+    info->instrText = disasm;
+    info->jmpaddr = basicinfo.branch && !basicinfo.call ? basicinfo.addr : 0;
     if(basicinfo.size <= 0)
         basicinfo.size = 1;
-    return addr+basicinfo.size;
+    return addr + basicinfo.size;
 }
 
 //graph start,end
 bool cbGraph(int argc, char* argv[])
 {
-    if(argc<3)
+    if(argc < 3)
     {
         _plugin_logputs("[TEST] not enough arguments!");
         return false;
     }
-    duint start=DbgValFromString(argv[1]);
-    duint end=DbgValFromString(argv[2]);
+    duint start = DbgValFromString(argv[1]);
+    duint end = DbgValFromString(argv[2]);
     if(!start || !end || end < start)
     {
         _plugin_logputs("[TEST] invalid arguments!");
         return false;
     }
-    wchar_t szGraphFile[MAX_PATH]=L"";
+    wchar_t szGraphFile[MAX_PATH] = L"";
     GetModuleFileNameW(GetModuleHandleW(0), szGraphFile, MAX_PATH);
-    int len=(int)wcslen(szGraphFile);
-    while(szGraphFile[len]!='\\' && len)
+    int len = (int)wcslen(szGraphFile);
+    while(szGraphFile[len] != '\\' && len)
         len--;
     if(len)
-        szGraphFile[len]=L'\0';
+        szGraphFile[len] = L'\0';
     wcscat_s(szGraphFile, L"\\function.vcg");
     if(!make_flowchart(start, end, szGraphFile, GetInstrInfo))
     {
@@ -303,4 +344,7 @@ void testSetup()
     _plugin_menuaddentry(hMenu, MENU_TEST, "&Menu Test");
     _plugin_menuaddentry(hMenu, MENU_SELECTION, "&Selection API Test");
     _plugin_menuaddentry(hMenu, MENU_FILEOFFSET, "Follow &File Offset...");
+    int hGraphMenu = _plugin_menuadd(hMenu, "&Graph");
+    _plugin_menuaddentry(hGraphMenu, MENU_GRAPH_SELECTION, "&Selection");
+    _plugin_menuaddentry(hGraphMenu, MENU_GRAPH_FUNCTION, "&Function");
 }
