@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <psapi.h>
+#include "FunctionGraph.h"
 
 extern "C" __declspec(dllexport) void CBINITDEBUG(CBTYPE cbType, PLUG_CB_INITDEBUG* info)
 {
@@ -227,6 +228,43 @@ static bool cbGrs(int argc, char* argv[])
     return true;
 }
 
+static ULONG_PTR GetInstrInfo(ULONG_PTR addr, instr_info* info)
+{
+    info->addr=addr;
+    char comment[MAX_COMMENT_SIZE]="";
+    DbgGetCommentAt(addr, comment);
+    info->comment=comment;
+    BASIC_INSTRUCTION_INFO basicinfo;
+    DbgDisasmFastAt(addr, &basicinfo);
+    info->instrText=basicinfo.instruction;
+    info->jmpaddr=basicinfo.branch && !basicinfo.call ? basicinfo.addr : 0;
+    return addr+basicinfo.size;
+}
+
+//graph start,end
+bool cbGraph(int argc, char* argv[])
+{
+    if(argc<3)
+    {
+        _plugin_logputs("[TEST] not enough arguments!");
+        return false;
+    }
+    duint start=DbgValFromString(argv[1]);
+    duint end=DbgValFromString(argv[2]);
+    if(!start || !end || end < start)
+    {
+        _plugin_logputs("[TEST] invalid arguments!");
+        return false;
+    }
+    if(!make_flowchart(start, end, L"C:\\test.graph", GetInstrInfo))
+    {
+        _plugin_logputs("[TEST] failed to generate graph!");
+        return false;
+    }
+    _plugin_logputs("[TEST] graph generated!");
+    return true;
+}
+
 void testInit(PLUG_INITSTRUCT* initStruct)
 {
     _plugin_logprintf("[TEST] pluginHandle: %d\n", pluginHandle);
@@ -236,6 +274,8 @@ void testInit(PLUG_INITSTRUCT* initStruct)
         _plugin_logputs("[TEST] error registering the \"DumpProcess\" command!");
     if(!_plugin_registercommand(pluginHandle, "grs", cbGrs, true))
         _plugin_logputs("[TEST] error registering the \"grs\" command!");
+    if(!_plugin_registercommand(pluginHandle, "graph", cbGraph, true))
+        _plugin_logputs("[TEST] error registering the \"graph\" command!");
 }
 
 void testStop()
