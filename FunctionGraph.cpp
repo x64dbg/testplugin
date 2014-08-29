@@ -1,6 +1,7 @@
 #include "FunctionGraph.h"
 #include <list>
 #include <set>
+#include <stdio.h>
 
 struct previous_edge_struct_s
 {
@@ -106,11 +107,11 @@ bool make_flowchart(ULONG_PTR start, ULONG_PTR end, const wchar_t* szTargetFile,
     char buffer[TEXTLEN * 2 + 4];
     ULONG_PTR currentnode = start;
 
-    int writelen = sprintf_s(buffer, "graph: {\ntitle: \"Graph of %p\"\n", start);
+    int writelen = sprintf(buffer, "graph: {\ntitle: \"Graph of %p\"\n", start);
     DWORD len_written;
     WriteFile(temp_file, buffer, (DWORD) writelen, &len_written, NULL);
     WriteFile(temp_file, vcg_params, (DWORD) strlen(vcg_params), &len_written, NULL);
-    writelen = sprintf_s(buffer, "node: { title: \"%p\" vertical_order: 0 color: 83 fontname: \"courR12\" label: \"%p:", currentnode, currentnode);
+    writelen = sprintf(buffer, "node: { title: \"%p\" vertical_order: 0 color: 83 fontname: \"courR12\" label: \"%p:", currentnode, currentnode);
     WriteFile(temp_file, buffer, (DWORD) writelen, &len_written, NULL);
 
     std::set<ULONG_PTR> nodelist; //list of node addresses, just to make sure we are not handling nodes multiple times
@@ -164,14 +165,14 @@ bool make_flowchart(ULONG_PTR start, ULONG_PTR end, const wchar_t* szTargetFile,
         {
             if(orphannode)
             {
-                writelen = sprintf_s(buffer, "edge: { sourcename: \"%p\" targetname: \"%p\" }\n", currentnode, current_addr);
+                writelen = sprintf(buffer, "edge: { sourcename: \"%p\" targetname: \"%p\" }\n", currentnode, current_addr);
                 edgelist += buffer;
             }
             orphannode = true;
             currentnode = current_addr;
-            writelen = sprintf_s(buffer, "\" }\n");
+            writelen = sprintf(buffer, "\" }\n");
             WriteFile(temp_file, buffer, (DWORD) writelen, &len_written, NULL);
-            writelen = sprintf_s(buffer, "node: { title: \"%p\" color: 83 fontname: \"courR12\" label: \"%p:", current_addr, current_addr);
+            writelen = sprintf(buffer, "node: { title: \"%p\" color: 83 fontname: \"courR12\" label: \"%p:", current_addr, current_addr);
             WriteFile(temp_file, buffer, (DWORD) writelen, &len_written, NULL);
         }
 
@@ -180,11 +181,11 @@ bool make_flowchart(ULONG_PTR start, ULONG_PTR end, const wchar_t* szTargetFile,
         {
             char clean_comment[TEXTLEN * 2];
             sanitize(disasm_result.comment.c_str(), clean_comment);
-            writelen = sprintf_s(buffer, "\n%s\t; %s", disasm_result.instrText.c_str(), clean_comment);
+            writelen = sprintf(buffer, "\n%s\t; %s", disasm_result.instrText.c_str(), clean_comment);
         }
         else
         {
-            writelen = sprintf_s(buffer, "\n%s", disasm_result.instrText.c_str());
+            writelen = sprintf(buffer, "\n%s", disasm_result.instrText.c_str());
         }
 
         WriteFile(temp_file, buffer, (DWORD)writelen, &len_written, NULL);
@@ -193,9 +194,9 @@ bool make_flowchart(ULONG_PTR start, ULONG_PTR end, const wchar_t* szTargetFile,
         {
             // append stored edge info with currentnode info to edgelist buffer
             previous_edge.targetfalse = currentnode;
-            writelen = sprintf_s(buffer, "edge: { sourcename: \"%p\" targetname: \"%p\" label: \"false\" color: red }\n", previous_edge.source, previous_edge.targetfalse);
+            writelen = sprintf(buffer, "edge: { sourcename: \"%p\" targetname: \"%p\" label: \"false\" color: red }\n", previous_edge.source, previous_edge.targetfalse);
             edgelist += buffer;
-            writelen = sprintf_s(buffer, "edge: { sourcename: \"%p\" targetname: \"%p\" label: \"true\" color: darkgreen }\n", previous_edge.source, previous_edge.targettrue);
+            writelen = sprintf(buffer, "edge: { sourcename: \"%p\" targetname: \"%p\" label: \"true\" color: darkgreen }\n", previous_edge.source, previous_edge.targettrue);
             edgelist += buffer;
             previous_edge.source = 0;
         }
@@ -211,7 +212,7 @@ bool make_flowchart(ULONG_PTR start, ULONG_PTR end, const wchar_t* szTargetFile,
             if(!_stricmp(disasm_result.instrText.substr(0, 3).c_str(), "jmp"))
             {
                 // straight jmp, no true/false
-                writelen = sprintf_s(buffer, "edge: { sourcename: \"%p\" targetname: \"%p\" }\n", previous_edge.source, previous_edge.targettrue);
+                writelen = sprintf(buffer, "edge: { sourcename: \"%p\" targetname: \"%p\" }\n", previous_edge.source, previous_edge.targettrue);
                 edgelist += buffer;
                 previous_edge.source = 0;
             }
@@ -219,13 +220,13 @@ bool make_flowchart(ULONG_PTR start, ULONG_PTR end, const wchar_t* szTargetFile,
     }
 
     // close last node
-    writelen = sprintf_s(buffer, "\" vertical_order: %d }\n", nodelist.size());
+    writelen = sprintf(buffer, "\" vertical_order: %d }\n", nodelist.size());
     WriteFile(temp_file, buffer, (DWORD)writelen, &len_written, NULL);
 
     // write edgelist
     WriteFile(temp_file, edgelist.c_str(), (DWORD)edgelist.length(), &len_written, NULL);
 
-    writelen = sprintf_s(buffer, "}\n");
+    writelen = sprintf(buffer, "}\n");
     WriteFile(temp_file, buffer, (DWORD)writelen, &len_written, NULL);
 
     CloseHandle(temp_file);

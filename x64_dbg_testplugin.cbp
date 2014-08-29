@@ -49,6 +49,8 @@
 			<Add library="comdlg32" />
 			<Add library="psapi" />
 		</Linker>
+		<Unit filename="FunctionGraph.cpp" />
+		<Unit filename="FunctionGraph.h" />
 		<Unit filename="pluginmain.cpp" />
 		<Unit filename="pluginmain.h" />
 		<Unit filename="pluginsdk/BeaEngine/BeaEngine.h" />

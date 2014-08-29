@@ -1,9 +1,9 @@
+#include "FunctionGraph.h"
 #include "test.h"
 #include "pluginsdk\TitanEngine\TitanEngine.h"
 #include <windows.h>
 #include <stdio.h>
 #include <psapi.h>
-#include "FunctionGraph.h"
 
 extern "C" __declspec(dllexport) void CBINITDEBUG(CBTYPE cbType, PLUG_CB_INITDEBUG* info)
 {
@@ -115,7 +115,7 @@ extern "C" __declspec(dllexport) void CBMENUENTRY(CBTYPE cbType, PLUG_CB_MENUENT
         if(!GuiSelectionGet(GUI_DISASSEMBLY, &selection))
             break;
         char cmd[256] = "";
-        sprintf_s(cmd, "graph %p,%p", selection.start, selection.end);
+        sprintf(cmd, "graph %p,%p", selection.start, selection.end);
         DbgCmdExec(cmd);
     }
     break;
@@ -138,7 +138,7 @@ extern "C" __declspec(dllexport) void CBMENUENTRY(CBTYPE cbType, PLUG_CB_MENUENT
                 break;
             }
         char cmd[256] = "";
-        sprintf_s(cmd, "graph %p,%p", start, end);
+        sprintf(cmd, "graph %p,%p", start, end);
         DbgCmdExec(cmd);
     }
     break;
@@ -306,7 +306,7 @@ bool cbGraph(int argc, char* argv[])
         len--;
     if(len)
         szGraphFile[len] = L'\0';
-    wcscat_s(szGraphFile, L"\\function.vcg");
+    wcscat(szGraphFile, L"\\function.vcg");
     if(!make_flowchart(start, end, szGraphFile, GetInstrInfo))
     {
         _plugin_logputs("[TEST] failed to generate graph!");
