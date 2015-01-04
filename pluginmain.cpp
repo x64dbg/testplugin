@@ -7,6 +7,9 @@
 int pluginHandle;
 HWND hwndDlg;
 int hMenu;
+int hMenuDisasm;
+int hMenuDump;
+int hMenuStack;
 
 DLL_EXPORT bool pluginit(PLUG_INITSTRUCT* initStruct)
 {
@@ -28,6 +31,9 @@ DLL_EXPORT void plugsetup(PLUG_SETUPSTRUCT* setupStruct)
 {
     hwndDlg = setupStruct->hwndDlg;
     hMenu = setupStruct->hMenu;
+    hMenuDisasm = setupStruct->hMenuDisasm;
+    hMenuDump = setupStruct->hMenuDump;
+    hMenuStack = setupStruct->hMenuStack;
     testSetup();
 }
 

@@ -5,6 +5,22 @@
 #include <stdio.h>
 #include <psapi.h>
 
+static void adler32selection(const SELECTIONDATA & sel)
+{
+    int len = sel.end - sel.start + 1;
+    unsigned char* data = new unsigned char[len];
+    DbgMemRead(sel.start, data, len);
+    DWORD a = 1, b = 0;
+    for(int index = 0; index < len; ++index)
+    {
+        a = (a + data[index]) % 65521;
+        b = (b + a) % 65521;
+    }
+    delete[] data;
+    DWORD checksum = (b << 16) | a;
+    _plugin_logprintf("[TEST] Adler32 of %p[%X] is: %08X\n", sel.start, len, checksum);
+}
+
 extern "C" __declspec(dllexport) void CBINITDEBUG(CBTYPE cbType, PLUG_CB_INITDEBUG* info)
 {
     _plugin_logprintf("[TEST] debugging of file %s started!\n", (const char*)info->szFileName);
@@ -140,6 +156,45 @@ extern "C" __declspec(dllexport) void CBMENUENTRY(CBTYPE cbType, PLUG_CB_MENUENT
         char cmd[256] = "";
         sprintf(cmd, "graph %p,%p", start, end);
         DbgCmdExec(cmd);
+    }
+    break;
+
+    case MENU_DISASM_ADLER32:
+    {
+        if(!DbgIsDebugging())
+        {
+            _plugin_logputs("you need to be debugging to use this command");
+            break;
+        }
+        SELECTIONDATA sel;
+        GuiSelectionGet(GUI_DISASSEMBLY, &sel);
+        adler32selection(sel);
+    }
+    break;
+
+    case MENU_DUMP_ADLER32:
+    {
+        if(!DbgIsDebugging())
+        {
+            _plugin_logputs("you need to be debugging to use this command");
+            break;
+        }
+        SELECTIONDATA sel;
+        GuiSelectionGet(GUI_DUMP, &sel);
+        adler32selection(sel);
+    }
+    break;
+
+    case MENU_STACK_ADLER32:
+    {
+        if(!DbgIsDebugging())
+        {
+            _plugin_logputs("you need to be debugging to use this command");
+            break;
+        }
+        SELECTIONDATA sel;
+        GuiSelectionGet(GUI_STACK, &sel);
+        adler32selection(sel);
     }
     break;
     }
@@ -347,4 +402,8 @@ void testSetup()
     int hGraphMenu = _plugin_menuadd(hMenu, "&Graph");
     _plugin_menuaddentry(hGraphMenu, MENU_GRAPH_SELECTION, "&Selection");
     _plugin_menuaddentry(hGraphMenu, MENU_GRAPH_FUNCTION, "&Function");
+
+    _plugin_menuaddentry(hMenuDisasm, MENU_DISASM_ADLER32, "&Adler32 Selection");
+    _plugin_menuaddentry(hMenuDump, MENU_DUMP_ADLER32, "&Adler32 Selection");
+    _plugin_menuaddentry(hMenuStack, MENU_STACK_ADLER32, "&Adler32 Selection");
 }
