@@ -11,6 +11,12 @@
 #define MENU_GRAPH_SELECTION 4
 #define MENU_GRAPH_FUNCTION 5
 
+#define MENU_DISASM_ADLER32 6
+#define MENU_DUMP_ADLER32 7
+#define MENU_STACK_ADLER32 8
+#define MENU_DISASM_GRAPH_SELECTION 9
+#define MENU_DISASM_GRAPH_FUNCTION 10
+
 //functions
 void testInit(PLUG_INITSTRUCT* initStruct);
 void testStop();
