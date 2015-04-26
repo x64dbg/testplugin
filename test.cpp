@@ -4,6 +4,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <psapi.h>
+#include "icons.h"
 
 static void adler32selection(const SELECTIONDATA & sel)
 {
@@ -400,6 +401,18 @@ void testStop()
 
 void testSetup()
 {
+    ICONDATA rocket;
+    rocket.data = icon_rocket;
+    rocket.size = sizeof(icon_rocket);
+    ICONDATA adler32;
+    adler32.data = icon_adler32;
+    adler32.size = sizeof(icon_adler32);
+
+    _plugin_menuseticon(hMenu, &rocket);
+    _plugin_menuseticon(hMenuDisasm, &rocket);
+    _plugin_menuseticon(hMenuDump, &rocket);
+    _plugin_menuseticon(hMenuStack, &rocket);
+
     _plugin_menuaddentry(hMenu, MENU_DUMP, "&DumpProcess...");
     _plugin_menuaddentry(hMenu, MENU_TEST, "&Menu Test");
     _plugin_menuaddentry(hMenu, MENU_SELECTION, "&Selection API Test");
@@ -409,9 +422,12 @@ void testSetup()
     _plugin_menuaddentry(hGraphMenu, MENU_GRAPH_FUNCTION, "&Function");
 
     _plugin_menuaddentry(hMenuDisasm, MENU_DISASM_ADLER32, "&Adler32 Selection");
+    _plugin_menuentryseticon(pluginHandle, MENU_DISASM_ADLER32, &adler32);
     _plugin_menuaddseparator(hMenuDisasm);
     _plugin_menuaddentry(hMenuDisasm, MENU_DISASM_GRAPH_SELECTION, "&Graph Selection");
     _plugin_menuaddentry(hMenuDisasm, MENU_DISASM_GRAPH_FUNCTION, "Graph &Function");
     _plugin_menuaddentry(hMenuDump, MENU_DUMP_ADLER32, "&Adler32 Selection");
+    _plugin_menuentryseticon(pluginHandle, MENU_DUMP_ADLER32, &adler32);
     _plugin_menuaddentry(hMenuStack, MENU_STACK_ADLER32, "&Adler32 Selection");
+    _plugin_menuentryseticon(pluginHandle, MENU_STACK_ADLER32, &adler32);
 }
