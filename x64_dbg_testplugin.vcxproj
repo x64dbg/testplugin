@@ -11,11 +11,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="angelscript\scriptstdstring.cpp" />
     <ClCompile Include="FunctionGraph.cpp" />
     <ClCompile Include="pluginmain.cpp" />
+    <ClCompile Include="script.cpp" />
     <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="angelscript\angelscript.h" />
+    <ClInclude Include="angelscript\scriptstdstring.h" />
     <ClInclude Include="FunctionGraph.h" />
     <ClInclude Include="icons.h" />
     <ClInclude Include="pluginmain.h" />
@@ -72,10 +76,12 @@
     <ClInclude Include="pluginsdk\_dbgfunctions.h" />
     <ClInclude Include="pluginsdk\_plugins.h" />
     <ClInclude Include="pluginsdk\_plugin_types.h" />
+    <ClInclude Include="script.h" />
     <ClInclude Include="test.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{C1055F2B-A0C2-0005-0D1B-3C99DC93F137}</ProjectGuid>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -122,7 +128,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>psapi.lib;pluginsdk\x32dbg.lib;pluginsdk\x32bridge.lib;pluginsdk\TitanEngine\TitanEngine_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;angelscript\angelscript.lib;psapi.lib;pluginsdk\x32dbg.lib;pluginsdk\x32bridge.lib;pluginsdk\TitanEngine\TitanEngine_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -137,7 +143,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>psapi.lib;pluginsdk\x64dbg.lib;pluginsdk\x64bridge.lib;pluginsdk\TitanEngine\TitanEngine_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;angelscript\angelscript64.lib;psapi.lib;pluginsdk\x64dbg.lib;pluginsdk\x64bridge.lib;pluginsdk\TitanEngine\TitanEngine_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

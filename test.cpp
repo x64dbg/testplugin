@@ -5,14 +5,15 @@
 #include <stdio.h>
 #include <psapi.h>
 #include "icons.h"
+#include "script.h"
 
 static void adler32selection(const SELECTIONDATA & sel)
 {
-    int len = sel.end - sel.start + 1;
+    duint len = sel.end - sel.start + 1;
     unsigned char* data = new unsigned char[len];
     DbgMemRead(sel.start, data, len);
     DWORD a = 1, b = 0;
-    for(int index = 0; index < len; ++index)
+    for(duint index = 0; index < len; ++index)
     {
         a = (a + data[index]) % 65521;
         b = (b + a) % 65521;
@@ -198,6 +199,12 @@ extern "C" __declspec(dllexport) void CBMENUENTRY(CBTYPE cbType, PLUG_CB_MENUENT
         SELECTIONDATA sel;
         GuiSelectionGet(GUI_STACK, &sel);
         adler32selection(sel);
+    }
+    break;
+
+    case MENU_SCRIPT:
+    {
+        _plugin_startscript(cbScript);
     }
     break;
     }
@@ -417,6 +424,7 @@ void testSetup()
     _plugin_menuaddentry(hMenu, MENU_TEST, "&Menu Test");
     _plugin_menuaddentry(hMenu, MENU_SELECTION, "&Selection API Test");
     _plugin_menuaddentry(hMenu, MENU_FILEOFFSET, "Follow &File Offset...");
+    _plugin_menuaddentry(hMenu, MENU_SCRIPT, "&Test script...");
     int hGraphMenu = _plugin_menuadd(hMenu, "&Graph");
     _plugin_menuaddentry(hGraphMenu, MENU_GRAPH_SELECTION, "&Selection");
     _plugin_menuaddentry(hGraphMenu, MENU_GRAPH_FUNCTION, "&Function");
