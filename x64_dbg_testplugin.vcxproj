@@ -76,6 +76,7 @@
     <ClInclude Include="pluginsdk\_dbgfunctions.h" />
     <ClInclude Include="pluginsdk\_plugins.h" />
     <ClInclude Include="pluginsdk\_plugin_types.h" />
+    <ClInclude Include="pluginsdk\_scriptapi.h" />
     <ClInclude Include="script.h" />
     <ClInclude Include="test.h" />
   </ItemGroup>

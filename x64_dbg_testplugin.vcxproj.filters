@@ -248,5 +248,8 @@
     <ClInclude Include="angelscript\angelscript.h">
       <Filter>Header Files\angelscript</Filter>
     </ClInclude>
+    <ClInclude Include="pluginsdk\_scriptapi.h">
+      <Filter>Header Files\pluginsdk</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
