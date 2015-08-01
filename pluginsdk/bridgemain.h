@@ -7,6 +7,9 @@
 #include <stdbool.h>
 #endif
 
+//list structure (and C++ wrapper)
+#include "bridgelist.h"
+
 //default structure alignments forced
 #ifdef _WIN64
 #pragma pack(push, 16)
@@ -48,6 +51,8 @@ BRIDGE_IMPEXP bool BridgeSettingGet(const char* section, const char* key, char* 
 BRIDGE_IMPEXP bool BridgeSettingGetUint(const char* section, const char* key, duint* value);
 BRIDGE_IMPEXP bool BridgeSettingSet(const char* section, const char* key, const char* value);
 BRIDGE_IMPEXP bool BridgeSettingSetUint(const char* section, const char* key, duint value);
+BRIDGE_IMPEXP bool BridgeSettingFlush();
+BRIDGE_IMPEXP bool BridgeSettingRead(int* errorLine);
 BRIDGE_IMPEXP int BridgeGetDbgVersion();
 
 //Debugger defines
@@ -167,7 +172,9 @@ typedef enum
     DBG_GET_STRING_AT,              // param1=duint addr,                param2=unused
     DBG_GET_FUNCTIONS,              // param1=unused,                    param2=unused
     DBG_WIN_EVENT,                  // param1=MSG* message,              param2=long* result
-    DBG_WIN_EVENT_GLOBAL            // param1=MSG* message,              param2=unused
+    DBG_WIN_EVENT_GLOBAL,           // param1=MSG* message,              param2=unused
+    DBG_INITIALIZE_LOCKS,           // param1=unused,                    param2=unused
+    DBG_DEINITIALIZE_LOCKS          // param1=unused,                    param2=unused
 } DBGMSG;
 
 typedef enum
@@ -761,8 +768,15 @@ typedef enum
     GUI_LOAD_SOURCE_FILE,           // param1=const char* path,     param2=line
     GUI_MENU_SET_ICON,              // param1=int hMenu,            param2=ICONINFO*
     GUI_MENU_SET_ENTRY_ICON,        // param1=int hEntry,           param2=ICONINFO*
-    GUI_SHOW_CPU                    // param1=unused,               param2=unused
+    GUI_SHOW_CPU,                   // param1=unused,               param2=unused
+    GUI_ADD_QWIDGET_TAB,            // param1=QWidget*,             param2=unused
+    GUI_SHOW_QWIDGET_TAB,           // param1=QWidget*,             param2=unused
+    GUI_CLOSE_QWIDGET_TAB,          // param1=QWidget*,             param2=unused
+    GUI_EXECUTE_ON_GUI_THREAD       // param1=GUICALLBACK,          param2=unused
 } GUIMSG;
+
+//GUI Typedefs
+typedef void (*GUICALLBACK)();
 
 //GUI structures
 typedef struct
@@ -848,6 +862,10 @@ BRIDGE_IMPEXP void GuiLoadSourceFile(const char* path, int line);
 BRIDGE_IMPEXP void GuiMenuSetIcon(int hMenu, const ICONDATA* icon);
 BRIDGE_IMPEXP void GuiMenuSetEntryIcon(int hEntry, const ICONDATA* icon);
 BRIDGE_IMPEXP void GuiShowCpu();
+BRIDGE_IMPEXP void GuiAddQWidgetTab(void* qWidget);
+BRIDGE_IMPEXP void GuiShowQWidgetTab(void* qWidget);
+BRIDGE_IMPEXP void GuiCloseQWidgetTab(void* qWidget);
+BRIDGE_IMPEXP void GuiExecuteOnGuiThread(GUICALLBACK cbGuiThread);
 
 #ifdef __cplusplus
 }
