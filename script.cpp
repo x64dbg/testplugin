@@ -1,7 +1,9 @@
 #include "script.h"
 #include "angelscript\angelscript.h"
 #include "angelscript\scriptstdstring.h"
-#include "pluginsdk\_scriptapi.h"
+#include "pluginsdk\_scriptapi_debug.h"
+#include "pluginsdk\_scriptapi_memory.h"
+#include "pluginsdk\_scriptapi_register.h"
 
 //
 // Script Engine stuff

@@ -3,10 +3,12 @@
 
 typedef struct
 {
-    size_t count; //Number of element in the list.
+    int count; //Number of element in the list.
     size_t size; //Size of list in bytes (used for type checking).
     void* data; //Pointer to the list contents. Must be deleted by the caller using BridgeFree (or List::Free).
 } ListInfo;
+
+#define ListOf(Type) ListInfo*
 
 #ifdef __cplusplus
 
@@ -50,7 +52,7 @@ public:
     \brief Gets the number of elements in the list. This will crash the program if the data is not consistent with the specified template argument.
     \return The number of elements in the list.
     */
-    inline size_t count() const
+    inline int count() const
     {
         if(_listInfo.size != _listInfo.count * sizeof(Type))  //make sure the user is using the correct type.
             __debugbreak();
@@ -70,11 +72,12 @@ public:
     }
 
     /**
-    \brief Reference operator.
+    \brief Reference operator (cleans up the previous list)
     \return Pointer to the ListInfo.
     */
     inline ListInfo* operator&()
     {
+        cleanup();
         return &_listInfo;
     }
 
@@ -85,7 +88,7 @@ public:
     */
     inline Type & operator[](size_t index) const
     {
-        if(index >= count())  //make sure the out-of-bounds access is caught as soon as possible.
+        if(index >= size_t(count()))  //make sure the out-of-bounds access is caught as soon as possible.
             __debugbreak();
         return data()[index];
     }
@@ -100,7 +103,7 @@ public:
     {
         if (!listInfo)
             return false;
-        listInfo->count = listData.size();
+        listInfo->count = int(listData.size());
         listInfo->size = listInfo->count * sizeof(Type);
         if (listInfo->count)
         {

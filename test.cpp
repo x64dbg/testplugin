@@ -6,6 +6,7 @@
 #include <psapi.h>
 #include "icons.h"
 #include "script.h"
+#include "pluginsdk\_scriptapi_module.h"
 
 static void adler32selection(const SELECTIONDATA & sel)
 {
@@ -382,6 +383,30 @@ bool cbGraph(int argc, char* argv[])
     return true;
 }
 
+bool cbModuleEnum(int argc, char* argv[])
+{
+    using namespace Script;
+    List<Module::ModuleInfo> modList;
+    if (Module::GetList(&modList))
+    {
+        for (int i = 0; i < modList.count(); i++)
+        {
+            _plugin_logprintf("Base: %p, Size: %p, Name: \"%s\"\n", modList[i].base, modList[i].size, modList[i].name);
+            List<Module::ModuleSectionInfo> sectionList;
+            if (Module::SectionListFromAddr(modList[i].base, &sectionList))
+            {
+                for (int j = 0; j < sectionList.count(); j++)
+                    _plugin_logprintf("  Addr: %p, Size: %p, Name: \"%s\"\n", sectionList[j].addr, sectionList[j].size, sectionList[j].name);
+            }
+            else
+                _plugin_logputs("[TEST] Module::SectionListFromAddr() failed...");
+        }
+    }
+    else
+        _plugin_logputs("[TEST] Module::GetList() failed...");
+    return true;
+}
+
 void testInit(PLUG_INITSTRUCT* initStruct)
 {
     _plugin_logprintf("[TEST] pluginHandle: %d\n", pluginHandle);
@@ -393,6 +418,8 @@ void testInit(PLUG_INITSTRUCT* initStruct)
         _plugin_logputs("[TEST] error registering the \"grs\" command!");
     if(!_plugin_registercommand(pluginHandle, "graph", cbGraph, true))
         _plugin_logputs("[TEST] error registering the \"graph\" command!");
+    if (!_plugin_registercommand(pluginHandle, "modenum", cbModuleEnum, true))
+        _plugin_logputs("[TEST] error registering the \"modenum\" command!");
 }
 
 void testStop()
@@ -400,6 +427,7 @@ void testStop()
     _plugin_unregistercommand(pluginHandle, "plugin1");
     _plugin_unregistercommand(pluginHandle, "DumpProcess");
     _plugin_unregistercommand(pluginHandle, "grs");
+    _plugin_unregistercommand(pluginHandle, "modenum");
     _plugin_menuclear(hMenu);
     _plugin_menuclear(hMenuDisasm);
     _plugin_menuclear(hMenuDump);
