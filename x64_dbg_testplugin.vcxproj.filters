@@ -49,6 +49,9 @@
     <Filter Include="Source Files\angelscript">
       <UniqueIdentifier>{1581c677-40a6-4e25-9f8c-f7f5f882507a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\unicorn">
+      <UniqueIdentifier>{d7d5994b-4f24-4607-9490-c031748779ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pluginmain.cpp">
@@ -250,6 +253,30 @@
     </ClInclude>
     <ClInclude Include="pluginsdk\_scriptapi.h">
       <Filter>Header Files\pluginsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="unicorn\arm.h">
+      <Filter>Header Files\unicorn</Filter>
+    </ClInclude>
+    <ClInclude Include="unicorn\arm64.h">
+      <Filter>Header Files\unicorn</Filter>
+    </ClInclude>
+    <ClInclude Include="unicorn\m68k.h">
+      <Filter>Header Files\unicorn</Filter>
+    </ClInclude>
+    <ClInclude Include="unicorn\mips.h">
+      <Filter>Header Files\unicorn</Filter>
+    </ClInclude>
+    <ClInclude Include="unicorn\platform.h">
+      <Filter>Header Files\unicorn</Filter>
+    </ClInclude>
+    <ClInclude Include="unicorn\sparc.h">
+      <Filter>Header Files\unicorn</Filter>
+    </ClInclude>
+    <ClInclude Include="unicorn\unicorn.h">
+      <Filter>Header Files\unicorn</Filter>
+    </ClInclude>
+    <ClInclude Include="unicorn\x86.h">
+      <Filter>Header Files\unicorn</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

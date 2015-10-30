@@ -382,6 +382,66 @@ bool cbGraph(int argc, char* argv[])
     return true;
 }
 
+#include "unicorn/unicorn.h"
+
+bool cbUnicorn(int argc, char* argv[])
+{
+    // code to be emulated
+#define X86_CODE32 "\x41\x4a" // INC ecx; DEC edx
+
+    // memory address where emulation starts
+    duint address = 0x1000000;
+
+    uc_engine* uc;
+    uc_err err;
+    int r_ecx = 0x1234;     // ECX register
+    int r_edx = 0x7890;     // EDX register
+
+    _plugin_logprintf("Emulate i386code\n");
+
+    // Initialize emulator in X86-32bit mode
+    err = uc_open(UC_ARCH_X86, UC_MODE_32, &uc);
+    if(err != UC_ERR_OK)
+    {
+        _plugin_logprintf("Failed on uc_open() with error returned: %u\n", err);
+        return false;
+    }
+
+    // map 2MB memory for this emulation
+    uc_mem_map(uc, address, 2 * 1024 * 1024, UC_PROT_ALL);
+
+    // write machine code to be emulated to memory
+    if(uc_mem_write(uc, address, X86_CODE32, sizeof(X86_CODE32) - 1))
+    {
+        _plugin_logprintf("Failed to write emulation code to memory, quit!\n");
+        return false;
+    }
+
+    // initialize machine registers
+    uc_reg_write(uc, UC_X86_REG_ECX, &r_ecx);
+    uc_reg_write(uc, UC_X86_REG_EDX, &r_edx);
+
+    // emulate code in infinite time & unlimited instructions
+    err = uc_emu_start(uc, address, address + sizeof(X86_CODE32) - 1, 0, 0);
+    if(err)
+    {
+        _plugin_logprintf("Failed on uc_emu_start() with error returned %u: %s\n",
+                          err, uc_strerror(err));
+    }
+
+    // now print out some registers
+    _plugin_logprintf("Emulation done. Below is the CPU context\n");
+
+    uc_reg_read(uc, UC_X86_REG_ECX, &r_ecx);
+    uc_reg_read(uc, UC_X86_REG_EDX, &r_edx);
+    _plugin_logprintf(">>> ECX = 0x%x\n", r_ecx);
+    _plugin_logprintf(">>> EDX = 0x%x\n", r_edx);
+
+    uc_close(uc);
+
+    return true;
+}
+
 void testInit(PLUG_INITSTRUCT* initStruct)
 {
     _plugin_logprintf("[TEST] pluginHandle: %d\n", pluginHandle);
@@ -393,6 +453,8 @@ void testInit(PLUG_INITSTRUCT* initStruct)
         _plugin_logputs("[TEST] error registering the \"grs\" command!");
     if(!_plugin_registercommand(pluginHandle, "graph", cbGraph, true))
         _plugin_logputs("[TEST] error registering the \"graph\" command!");
+    if(!_plugin_registercommand(pluginHandle, "unicorn", cbUnicorn, false))
+        _plugin_logputs("[TEST} error registering the \"unicorn\" command!");
 }
 
 void testStop()
@@ -400,6 +462,8 @@ void testStop()
     _plugin_unregistercommand(pluginHandle, "plugin1");
     _plugin_unregistercommand(pluginHandle, "DumpProcess");
     _plugin_unregistercommand(pluginHandle, "grs");
+    _plugin_unregistercommand(pluginHandle, "graph");
+    _plugin_unregistercommand(pluginHandle, "unicorn");
     _plugin_menuclear(hMenu);
     _plugin_menuclear(hMenuDisasm);
     _plugin_menuclear(hMenuDump);
