@@ -29,6 +29,18 @@ typedef struct
 
 typedef struct
 {
+    duint addr;
+    duint handler;
+} DBGSEHRECORD;
+
+typedef struct
+{
+    duint total;
+    DBGSEHRECORD* records;
+} DBGSEHCHAIN;
+
+typedef struct
+{
     DWORD dwProcessId;
     char szExeFile[MAX_PATH];
 } DBGPROCESSINFO;
@@ -36,9 +48,9 @@ typedef struct
 typedef bool (*ASSEMBLEATEX)(duint addr, const char* instruction, char* error, bool fillnop);
 typedef bool (*SECTIONFROMADDR)(duint addr, char* section);
 typedef bool (*MODNAMEFROMADDR)(duint addr, char* modname, bool extension);
-typedef duint (*MODBASEFROMADDR)(duint addr);
-typedef duint (*MODBASEFROMNAME)(const char* modname);
-typedef duint (*MODSIZEFROMADDR)(duint addr);
+typedef duint(*MODBASEFROMADDR)(duint addr);
+typedef duint(*MODBASEFROMNAME)(const char* modname);
+typedef duint(*MODSIZEFROMADDR)(duint addr);
 typedef bool (*ASSEMBLE)(duint addr, unsigned char* dest, int* size, const char* instruction, char* error);
 typedef bool (*PATCHGET)(duint addr);
 typedef bool (*PATCHINRANGE)(duint start, duint end);
@@ -49,9 +61,10 @@ typedef bool (*PATCHRESTORE)(duint addr);
 typedef int (*PATCHFILE)(DBGPATCHINFO* patchlist, int count, const char* szFileName, char* error);
 typedef int (*MODPATHFROMADDR)(duint addr, char* path, int size);
 typedef int (*MODPATHFROMNAME)(const char* modname, char* path, int size);
-typedef bool (*DISASMFAST)(unsigned char* data, duint addr, BASIC_INSTRUCTION_INFO* basicinfo);
+typedef bool (*DISASMFAST)(const unsigned char* data, duint addr, BASIC_INSTRUCTION_INFO* basicinfo);
 typedef void (*MEMUPDATEMAP)();
 typedef void (*GETCALLSTACK)(DBGCALLSTACK* callstack);
+typedef void (*GETSEHCHAIN)(DBGSEHCHAIN* sehchain);
 typedef void (*SYMBOLDOWNLOADALLSYMBOLS)(const char* szSymbolStore);
 typedef bool (*GETJIT)(char* jit, bool x64);
 typedef bool (*GETJITAUTO)(bool* jitauto);
@@ -63,11 +76,12 @@ typedef bool (*PAGERIGHTSTOSTRING)(DWORD protect, char* rights);
 typedef bool (*ISPROCESSELEVATED)();
 typedef bool (*GETCMDLINE)(char* cmdline, size_t* cbsize);
 typedef bool (*SETCMDLINE)(const char* cmdline);
-typedef duint (*FILEOFFSETTOVA)(const char* modname, duint offset);
-typedef duint (*VATOFILEOFFSET)(duint va);
-typedef duint (*GETADDRFROMLINE)(const char* szSourceFile, int line);
+typedef duint(*FILEOFFSETTOVA)(const char* modname, duint offset);
+typedef duint(*VATOFILEOFFSET)(duint va);
+typedef duint(*GETADDRFROMLINE)(const char* szSourceFile, int line);
 typedef bool (*GETSOURCEFROMADDR)(duint addr, char* szSourceFile, int* line);
 typedef bool (*VALFROMSTRING)(const char* string, duint* value);
+typedef bool(*PATCHGETEX)(duint addr, DBGPATCHINFO* info);
 
 typedef struct DBGFUNCTIONS_
 {
@@ -90,6 +104,7 @@ typedef struct DBGFUNCTIONS_
     DISASMFAST DisasmFast;
     MEMUPDATEMAP MemUpdateMap;
     GETCALLSTACK GetCallStack;
+    GETSEHCHAIN GetSEHChain;
     SYMBOLDOWNLOADALLSYMBOLS SymbolDownloadAllSymbols;
     GETJITAUTO GetJitAuto;
     GETJIT GetJit;
@@ -106,6 +121,7 @@ typedef struct DBGFUNCTIONS_
     GETADDRFROMLINE GetAddrFromLine;
     GETSOURCEFROMADDR GetSourceFromAddr;
     VALFROMSTRING ValFromString;
+    PATCHGETEX PatchGetEx;
 } DBGFUNCTIONS;
 
 #ifdef BUILD_DBG

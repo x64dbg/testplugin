@@ -2,7 +2,7 @@
 #define CAPSTONE_ARM64_H
 
 /* Capstone Disassembly Engine */
-/* By Nguyen Anh Quynh <aquynh@gmail.com>, 2013-2014 */
+/* By Nguyen Anh Quynh <aquynh@gmail.com>, 2013-2015 */
 
 #ifdef __cplusplus
 extern "C" {
@@ -1157,6 +1157,10 @@ typedef enum arm64_insn_group
     //> Generic groups
     // all jump instructions (conditional+direct+indirect jumps)
     ARM64_GRP_JUMP, // = CS_GRP_JUMP
+    ARM64_GRP_CALL,
+    ARM64_GRP_RET,
+    ARM64_GRP_INT,
+    ARM64_GRP_PRIVILEGE = 6, // = CS_GRP_PRIVILEGE
 
     //> Architecture-specific groups
     ARM64_GRP_CRYPTO = 128,

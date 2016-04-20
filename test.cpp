@@ -386,16 +386,16 @@ bool cbGraph(int argc, char* argv[])
 bool cbModuleEnum(int argc, char* argv[])
 {
     using namespace Script;
-    List<Module::ModuleInfo> modList;
+    BridgeList<Module::ModuleInfo> modList;
     if (Module::GetList(&modList))
     {
-        for (int i = 0; i < modList.count(); i++)
+        for (int i = 0; i < modList.Count(); i++)
         {
             _plugin_logprintf("Base: %p, Size: %p, Name: \"%s\"\n", modList[i].base, modList[i].size, modList[i].name);
-            List<Module::ModuleSectionInfo> sectionList;
+            BridgeList<Module::ModuleSectionInfo> sectionList;
             if (Module::SectionListFromAddr(modList[i].base, &sectionList))
             {
-                for (int j = 0; j < sectionList.count(); j++)
+                for (int j = 0; j < sectionList.Count(); j++)
                     _plugin_logprintf("  Addr: %p, Size: %p, Name: \"%s\"\n", sectionList[j].addr, sectionList[j].size, sectionList[j].name);
             }
             else
