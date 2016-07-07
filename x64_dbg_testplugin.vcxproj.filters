@@ -281,5 +281,26 @@
     <ClInclude Include="pluginsdk\bridgelist.h">
       <Filter>Header Files\pluginsdk</Filter>
     </ClInclude>
+    <ClInclude Include="pluginsdk\_scriptapi_argument.h">
+      <Filter>Header Files\pluginsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="pluginsdk\_scriptapi_bookmark.h">
+      <Filter>Header Files\pluginsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="pluginsdk\_scriptapi_comment.h">
+      <Filter>Header Files\pluginsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="pluginsdk\_scriptapi_flag.h">
+      <Filter>Header Files\pluginsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="pluginsdk\_scriptapi_function.h">
+      <Filter>Header Files\pluginsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="pluginsdk\_scriptapi_label.h">
+      <Filter>Header Files\pluginsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="pluginsdk\_scriptapi_symbol.h">
+      <Filter>Header Files\pluginsdk</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
