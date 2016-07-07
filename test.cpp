@@ -420,6 +420,11 @@ void testInit(PLUG_INITSTRUCT* initStruct)
         _plugin_logputs("[TEST] error registering the \"graph\" command!");
     if (!_plugin_registercommand(pluginHandle, "modenum", cbModuleEnum, true))
         _plugin_logputs("[TEST] error registering the \"modenum\" command!");
+    if (!_plugin_registerexprfunction(pluginHandle, "testplugin.zero", 0, [](int argc, const duint* argv) -> duint
+    {
+        return 0;
+    }))
+        _plugin_logputs("[TEST] error registering the \"testplugin.zero\" expression function!");
 }
 
 void testStop()
