@@ -55,6 +55,17 @@ BRIDGE_IMPEXP bool BridgeSettingFlush();
 BRIDGE_IMPEXP bool BridgeSettingRead(int* errorLine);
 BRIDGE_IMPEXP int BridgeGetDbgVersion();
 
+#ifdef __cplusplus
+}
+#endif
+
+#include "bridgegraph.h"
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 //Debugger defines
 #define MAX_LABEL_SIZE 256
 #define MAX_COMMENT_SIZE 512
@@ -397,6 +408,7 @@ typedef struct
     // extended part
     unsigned int hitCount;
     bool fastResume;
+    bool silent;
     char breakCondition[MAX_CONDITIONAL_EXPR_SIZE];
     char logText[MAX_CONDITIONAL_TEXT_SIZE];
     char logCondition[MAX_CONDITIONAL_EXPR_SIZE];
@@ -935,7 +947,10 @@ typedef enum
     GUI_UNREGISTER_SCRIPT_LANG,     // param1=int id,               param2=unused
     GUI_UPDATE_ARGUMENT_VIEW,       // param1=unused,               param2=unused
     GUI_FOCUS_VIEW,                 // param1=int hWindow,          param2=unused
-    GUI_UPDATE_WATCH_VIEW           // param1=unused,               param2=unused
+    GUI_UPDATE_WATCH_VIEW,          // param1=unused,               param2=unused
+    GUI_LOAD_GRAPH,                 // param1=BridgeCFGraphList*    param2=unused
+    GUI_GRAPH_AT,                   // param1=duint addr            param2=unused
+    GUI_UPDATE_GRAPH_VIEW           // param1=unused,               param2=unused
 } GUIMSG;
 
 //GUI Typedefs
@@ -1056,6 +1071,9 @@ BRIDGE_IMPEXP void GuiFocusView(int hWindow);
 BRIDGE_IMPEXP bool GuiIsUpdateDisabled();
 BRIDGE_IMPEXP void GuiUpdateEnable(bool updateNow);
 BRIDGE_IMPEXP void GuiUpdateDisable();
+BRIDGE_IMPEXP void GuiLoadGraph(BridgeCFGraphList* graph);
+BRIDGE_IMPEXP void GuiGraphAt(duint addr);
+BRIDGE_IMPEXP void GuiUpdateGraphView();
 
 #ifdef __cplusplus
 }
